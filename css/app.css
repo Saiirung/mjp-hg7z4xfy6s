@@ -1,0 +1,124 @@
+/* MilkJelly Pattern — look A2 (mockups/pattern-ui-a2.png): cream desk, white cards with a soft bottom edge, the pink cutting mat in the middle.
+   Icon-only buttons (names in aria-label), big enough for a finger on iPad (≥ 44 px), no visible scrollbars. */
+:root { --ink: #3E3A36; --desk: #F4F1EA; --card: #fff; --edge: #E2DDD3; --soft: #F4F1EA; --pink: #F7CFDB; --pink2: #F2B8C9; --pinkL: #FCE8EE; --pinkD: #E07A9A; --go: #E88FA8; --goE: #CF7590; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font-family: "KoHo", "IBM Plex Sans Thai", system-ui, sans-serif; color: var(--ink); background: var(--desk); overflow: hidden; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(circle at 20% 10%, #FFFDF8, transparent 60%); pointer-events: none; }
+button { font: inherit; color: inherit; border: 0; cursor: pointer; background: none; }
+input[type=text] { user-select: text; -webkit-user-select: text; }
+*::-webkit-scrollbar { display: none; } * { scrollbar-width: none; }
+
+.app { position: fixed; inset: 0; display: grid; grid-template-columns: 76px minmax(0, 1fr) 380px; grid-template-rows: 64px minmax(0, 1fr); gap: 16px;
+  padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
+.top { grid-column: 1 / 4; display: flex; align-items: center; gap: 14px; padding: 0 8px; min-width: 0; }
+.logo { font-weight: 700; font-size: 25px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.logo i { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-style: normal; font-size: 20px; background: #F7B9CB; }
+.modes { display: flex; gap: 8px; margin-left: 20px; }
+.modes button, .exp button { min-width: 52px; height: 46px; border-radius: 14px; background: #fff; box-shadow: 0 2px 0 var(--edge); font-size: 20px; display: grid; place-items: center; }
+.modes button.on { background: var(--ink); color: #fff; box-shadow: none; }
+.modes button:not(.on) { opacity: .9; }
+.exp { margin-left: auto; display: flex; gap: 10px; }
+.exp button:disabled { opacity: .35; cursor: default; }
+.exp .go { padding: 0 22px; font-size: 16px; font-weight: 600; display: flex; gap: 8px; }
+.go { background: var(--go) !important; color: #fff !important; box-shadow: 0 2px 0 var(--goE) !important; }
+
+.tools { grid-row: 2; display: flex; flex-direction: column; gap: 10px; padding: 12px 0; align-items: center; background: #fff; border-radius: 22px; box-shadow: 0 2px 0 var(--edge); overflow-y: auto; }
+.tools button { width: 52px; height: 52px; flex: none; border-radius: 15px; font-size: 22px; display: grid; place-items: center; }
+.tools button:hover { background: var(--soft); }
+.tools button.on { background: var(--pinkL); color: var(--pinkD); }
+.tools button:disabled { opacity: .3; cursor: default; background: none; }
+
+.work { grid-row: 2; position: relative; border-radius: 22px; overflow: hidden; touch-action: none;
+  background-color: var(--pink);
+  background-image: linear-gradient(rgba(255,255,255,.45) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.45) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.22) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px; box-shadow: inset 0 0 0 10px var(--pink2); }
+.work canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.work.drop { box-shadow: inset 0 0 0 10px var(--pinkD); }
+.hint { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; background: rgba(255,255,255,.85); padding: 8px 16px; border-radius: 99px; font-size: 14px; pointer-events: none; white-space: nowrap; }
+.hint[hidden] { display: none; }
+
+.side { grid-row: 2; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; min-height: 0; }
+.card { background: #fff; border-radius: 18px; box-shadow: 0 2px 0 var(--edge); padding: 14px 16px; flex: none; }
+.card[hidden] { display: none; }
+.card.grow { flex: 1 0 auto; }
+.card h4 { margin: 0 0 10px; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.card h4.mt { margin-top: 14px; }
+.card h4 em { font-style: normal; font-weight: 500; opacity: .5; margin-left: auto; }
+.prev { height: 240px; border-radius: 12px; overflow: hidden; background: var(--soft); }
+.prev canvas { width: 100%; height: 100%; display: block; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row button { width: 52px; height: 46px; border-radius: 12px; background: var(--soft); display: grid; place-items: center; font-size: 18px; }
+.row button.on { background: var(--ink); color: #fff; }
+.row button svg { width: 26px; height: 26px; }
+.sw { width: 36px !important; height: 36px !important; border-radius: 50% !important; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); position: relative; }
+.sw.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink) !important; }
+.sw.none { background: repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 50% / 12px 12px !important; }
+.sw input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+input[type=range] { width: 100%; accent-color: var(--ink); height: 28px; }
+.prop { display: flex; align-items: center; gap: 10px; margin: 2px 0 6px; font-size: 14px; }
+.prop span { min-width: 18px; font-size: 17px; text-align: center; }
+.prop input[type=text] { flex: 1; height: 40px; border-radius: 10px; border: 1px solid var(--edge); padding: 0 10px; font: inherit; font-size: 16px; }
+.prop input[type=color] { width: 44px; height: 40px; border: 0; border-radius: 10px; padding: 0; background: none; }
+.prop[hidden] { display: none; }
+.lay { display: flex; flex-direction: column; gap: 4px; }
+.lay button { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 10px; font-size: 14px; text-align: left; min-height: 44px; }
+.lay button:hover { background: var(--soft); }
+.lay button.on { background: var(--pinkL); }
+.lay img { width: 32px; height: 32px; object-fit: contain; flex: none; }
+.lay .empty { opacity: .5; font-size: 14px; padding: 6px 8px; }
+
+.pop { position: fixed; z-index: 20; background: #fff; border-radius: 18px; box-shadow: 0 10px 40px rgba(60,40,40,.2); padding: 12px; }
+.pop[hidden] { display: none; }
+.stk { display: grid; grid-template-columns: repeat(4, 64px); gap: 8px; }
+.stk button { width: 64px; height: 64px; border-radius: 14px; background: var(--soft); display: grid; place-items: center; }
+.stk button:hover { background: var(--pinkL); }
+.stk img { width: 46px; height: 46px; object-fit: contain; }
+
+.ov { position: fixed; inset: 0; z-index: 30; background: rgba(62,58,54,.35); display: grid; place-items: center; padding: 16px; }
+.ov[hidden] { display: none; }
+.modal { position: relative; background: var(--desk); border-radius: 24px; padding: 22px; width: min(860px, 100%); max-height: 100%; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.modal h3 { margin: 0 0 14px; font-size: 20px; }
+.modal .x { position: absolute; right: 14px; top: 14px; width: 44px; height: 44px; border-radius: 50%; background: #fff; font-size: 16px; }
+.exgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.ex { background: #fff; border-radius: 18px; box-shadow: 0 2px 0 var(--edge); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.ex h4 { margin: 0; font-size: 16px; }
+.ex p { margin: 0; font-size: 13px; opacity: .65; }
+.ex > .go, .row2 button { height: 46px; border-radius: 14px; font-weight: 600; margin-top: auto; }
+.row2 { display: flex; gap: 8px; margin-top: auto; } .row2 button { flex: 1; margin: 0; background: var(--soft); }
+.seg { display: flex; background: var(--soft); border-radius: 12px; padding: 3px; }
+.seg button { flex: 1; height: 38px; border-radius: 10px; font-size: 14px; }
+.seg button.on { background: var(--ink); color: #fff; }
+.chk { display: flex; align-items: center; gap: 8px; font-size: 14px; min-height: 32px; }
+.chk input { width: 20px; height: 20px; accent-color: var(--ink); }
+.busy { opacity: .5; pointer-events: none; }
+
+.toast { position: fixed; left: 50%; bottom: 24px; translate: -50% 20px; z-index: 40; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s, translate .25s; }
+.toast.on { opacity: 1; translate: -50% 0; }
+
+/* narrower screens (iPad portrait): the side column goes under the mat */
+@media (max-width: 1100px) {
+  .app { grid-template-columns: 68px minmax(0, 1fr); grid-template-rows: 60px minmax(0, 1fr) 300px; }
+  .top { grid-column: 1 / 3; } .logo span { display: none; }
+  .side { grid-column: 1 / 3; grid-row: 3; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
+  .side .card { width: 300px; overflow-y: auto; }
+  .prev { height: 170px; }
+}
+
+/* ▦ ready-made (06-ready): its card only in that mode · the tools / the picked piece's card only in ✋ */
+body:not([data-mode="ready"]) #readyCard { display: none; }
+body:not([data-mode="place"]) .tools { opacity: .35; pointer-events: none; }
+body:not([data-mode="place"]) #propCard { display: none; }
+body:not([data-mode="draw"]) #drawCard, body:not([data-mode="photo"]) #photoCard { display: none; }
+body[data-mode="draw"] #drawCard, body[data-mode="photo"] #photoCard { order: -1; }
+.mt8 { margin-top: 10px; }
+.row button.wide { width: auto; flex: 1; padding: 0 16px; font-weight: 600; font-size: 15px; }
+.row button:disabled { opacity: .35; cursor: default; }
+.phthumb { display: block; width: 100%; height: 90px; object-fit: cover; border-radius: 10px; margin: 10px 0 6px; }
+.note { margin: 2px 0 8px; font-size: 13px; color: #B5566F; }
+#phOpts[hidden], #dwCols[hidden], .note[hidden] { display: none; }
+#rdOpts[hidden], .chk[hidden], .seg[hidden] { display: none; }
+#rdOpts .seg { margin: 4px 0 6px; }
+.num { min-width: 22px; text-align: right; font-size: 14px; }
+body[data-mode="ready"] #readyCard { order: -1; }   /* (first in the column while ▦ is on) */

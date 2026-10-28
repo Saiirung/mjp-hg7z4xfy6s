@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MilkJelly Pattern</title>
+<meta name="robots" content="noindex, nofollow, noarchive">   <!-- (on the web at a hard-to-guess address — not for search engines, user 2026-10-28) -->
+<meta name="theme-color" content="#F4F1EA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MJ Pattern">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=KoHo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<!-- MilkJelly Pattern — seamless patterns (user 2026-10-28). The look = mock-up A2 (mockups/pattern-ui-a2.png): a pink cutting mat in the middle,
+     tools left, the repeat preview / arrangement / pieces right. Modes: ✋ place pieces · ▦ ready-made (a ground pattern under the pieces) · ✏️ draw (on top) · 🖼️ from a picture (a texture photo under all). -->
+<div class="app" id="app">
+  <header class="top">
+    <div class="logo"><i>🍮</i><span>MilkJelly Pattern</span></div>
+    <nav class="modes" aria-label="โหมด">
+      <button class="on" data-mode="place" aria-label="วางลายเอง">✋</button>
+      <button data-mode="ready" aria-label="ลายสำเร็จ">▦</button>
+      <button data-mode="draw" aria-label="วาดเอง">✏️</button>
+      <button data-mode="photo" aria-label="แปลงรูป">🖼️</button>
+    </nav>
+    <div class="exp">
+      <button id="undoBtn" aria-label="เลิกทำ">↶</button>
+      <button id="redoBtn" aria-label="ทำซ้ำ">↷</button>
+      <button id="exportBtn" class="go">⬇ ส่งออก</button>
+    </div>
+  </header>
+
+  <aside class="tools" aria-label="เครื่องมือ">
+    <button class="on" id="toolSel" aria-label="เลือก / ย้าย">➤</button>
+    <button id="toolAdd" aria-label="เพิ่มรูป">＋</button>
+    <button id="toolStk" aria-label="สติ๊กเกอร์">🍓</button>
+    <button id="toolText" aria-label="ตัวหนังสือ">Aa</button>
+    <button id="toolDup" aria-label="ทำสำเนา">⧉</button>
+    <button id="toolScatter" aria-label="สุ่มกระจาย">🎲</button>
+    <button id="toolDel" aria-label="ลบ">🗑</button>
+    <input type="file" id="fileIn" accept="image/*" multiple hidden>
+  </aside>
+
+  <main class="work" id="work">
+    <canvas id="ed"></canvas>
+    <div class="hint" id="hint">＋ เพิ่มรูป · 🍓 สติ๊กเกอร์ · หรือลากรูปมาวาง</div>
+  </main>
+
+  <section class="side">
+    <div class="card">
+      <h4>👀 ตัวอย่างเรียงซ้ำ</h4>
+      <div class="prev"><canvas id="pv"></canvas></div>
+      <input type="range" id="pvZoom" min="1.5" max="8" step=".1" value="3" aria-label="จำนวนแผ่นในตัวอย่าง">
+    </div>
+    <div class="card">
+      <h4>🔁 การเรียง</h4>
+      <div class="row" id="repRow">
+        <button data-rep="grid" class="on" aria-label="ต่อตรง"><svg viewBox="0 0 28 28"><g fill="currentColor"><rect x="2" y="2" width="11" height="11" rx="2"/><rect x="15" y="2" width="11" height="11" rx="2"/><rect x="2" y="15" width="11" height="11" rx="2"/><rect x="15" y="15" width="11" height="11" rx="2"/></g></svg></button>
+        <button data-rep="halfdrop" aria-label="สลับครึ่งแผ่นแนวตั้ง"><svg viewBox="0 0 28 28"><g fill="currentColor"><rect x="2" y="2" width="11" height="11" rx="2"/><rect x="15" y="8" width="11" height="11" rx="2"/><rect x="2" y="15" width="11" height="11" rx="2"/></g></svg></button>
+        <button data-rep="brick" aria-label="สลับครึ่งแผ่นแนวนอน"><svg viewBox="0 0 28 28"><g fill="currentColor"><rect x="2" y="2" width="11" height="11" rx="2"/><rect x="15" y="2" width="11" height="11" rx="2"/><rect x="8" y="15" width="11" height="11" rx="2"/></g></svg></button>
+        <button data-rep="mirror" aria-label="สะท้อน"><svg viewBox="0 0 28 28"><path d="M14 3v22M4 8l6 6-6 6zM24 8l-6 6 6 6z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <h4 class="mt">🎨 พื้น</h4>
+      <div class="row" id="bgRow"></div>
+    </div>
+    <div class="card" id="readyCard">
+      <h4>▦ ลายสำเร็จ</h4>
+      <div class="row" id="rdKinds"></div>
+      <div id="rdOpts">
+        <h4 class="mt">🎨 สีลาย</h4>
+        <div class="row" id="rdCols"></div>
+        <label class="prop"><span aria-hidden="true">#</span><input type="range" id="rdN" min="1" max="16" step="1" aria-label="จำนวนต่อแผ่น"><b id="rdNV" class="num"></b></label>
+        <label class="prop"><span aria-hidden="true">↔</span><input type="range" id="rdSize" min="5" max="100" aria-label="ขนาด"></label>
+        <div class="seg" id="rdDir"><button data-v="v" aria-label="แนวตั้ง">│</button><button data-v="h" aria-label="แนวนอน">─</button><button data-v="d" aria-label="เฉียงขวา">╱</button><button data-v="e" aria-label="เฉียงซ้าย">╲</button></div>
+        <label class="chk"><input type="checkbox" id="rdStag"> สลับแถว (เพิ่มชุดระหว่างกลาง)</label>
+      </div>
+    </div>
+    <div class="card" id="drawCard">
+      <h4>✏️ วาดเอง</h4>
+      <div class="row"><button data-dt="pen" aria-label="ปากกา">✏️</button><button data-dt="marker" aria-label="ปากกาเมจิกโปร่ง">🖍️</button><button data-dt="erase" aria-label="ยางลบ">🧽</button><button id="dwClear" aria-label="ล้างที่วาดทั้งหมด">🗑</button></div>
+      <div class="row mt8" id="dwCols"></div>
+      <label class="prop"><span aria-hidden="true">●</span><input type="range" id="dwSz" min="2" max="120" aria-label="ขนาดแปรง"></label>
+      <label class="prop"><span aria-hidden="true">◐</span><input type="range" id="dwA" min="10" max="100" aria-label="ความเข้ม"></label>
+    </div>
+    <div class="card" id="photoCard">
+      <h4>🖼️ แปลงรูปเป็นลาย</h4>
+      <div class="row"><button class="wide go" id="phAdd">＋ เลือกรูป</button><input type="file" id="phFile" accept="image/*" hidden></div>
+      <div id="phOpts">
+        <img id="phThumb" class="phthumb" alt="">
+        <label class="prop"><span aria-hidden="true">🔍</span><input type="range" id="phZ" min="100" max="600" aria-label="ย่อขยายรูป"></label>
+        <label class="prop"><span aria-hidden="true">≋</span><input type="range" id="phB" min="10" max="90" aria-label="ความนุ่มรอยต่อ"></label>
+        <p class="note" id="phWarn">รูปต่อเนียนเฉพาะการเรียง "ต่อตรง" กับ "สะท้อน"</p>
+        <div class="row"><button id="phDel" aria-label="เอารูปออก">🗑</button></div>
+      </div>
+    </div>
+    <div class="card" id="propCard" hidden>
+      <h4>✏️ ชิ้นที่เลือก</h4>
+      <div class="prop" id="propText" hidden><input type="text" id="txtIn" maxlength="40" aria-label="ข้อความ"><input type="color" id="txtCol" aria-label="สีตัวหนังสือ"></div>
+      <label class="prop"><span aria-hidden="true">↔</span><input type="range" id="szIn" min="10" max="900" aria-label="ขนาด"></label>
+      <label class="prop"><span aria-hidden="true">⟳</span><input type="range" id="rotIn" min="-180" max="180" aria-label="หมุน"></label>
+      <div class="row">
+        <button id="flipBtn" aria-label="กลับซ้ายขวา">⇋</button>
+        <button id="upBtn" aria-label="ขึ้นหน้า">⬆</button>
+        <button id="downBtn" aria-label="ลงหลัง">⬇</button>
+      </div>
+    </div>
+    <div class="card grow">
+      <h4>📚 ชิ้นในลาย <em id="layN"></em></h4>
+      <div class="lay" id="layList"></div>
+    </div>
+  </section>
+</div>
+
+<!-- sticker drawer (🍓) -->
+<div class="pop" id="stkPop" hidden><div class="stk" id="stkGrid"></div></div>
+
+<!-- export window -->
+<div class="ov" id="expOv" hidden>
+  <div class="modal" role="dialog" aria-label="ส่งออก">
+    <button class="x" id="expX" aria-label="ปิด">✕</button>
+    <h3>⬇ ส่งออก</h3>
+    <div class="exgrid">
+      <div class="ex">
+        <h4>🖼️ ลายเดี่ยว (PNG)</h4>
+        <p>แผ่นลายที่เอาไปเรียงต่อกันได้เอง</p>
+        <div class="seg" data-opt="pngSize"><button data-v="1024">1024</button><button data-v="2048" class="on">2048</button><button data-v="4096">4096</button></div>
+        <button class="go" id="exPng">ดาวน์โหลด</button>
+      </div>
+      <div class="ex">
+        <h4>🖌️ แปรง Procreate (.brush)</h4>
+        <p>ลายเป็นพื้นผิวแปรง (Grain) — ระบายทีเดียวได้ลายเต็ม</p>
+        <div class="seg" data-opt="brSize"><button data-v="1024" class="on">1024</button><button data-v="2048">2048</button></div>
+        <div class="seg" data-opt="brSrc"><button data-v="shape" class="on">ทรงของลาย</button><button data-v="light">ความสว่าง</button></div>
+        <label class="chk"><input type="checkbox" id="brInv"> กลับขาว ↔ ดำ</label>
+        <button class="go" id="exBrush">ดาวน์โหลด</button>
+      </div>
+      <div class="ex">
+        <h4>🖨️ พิมพ์กระดาษ (300 dpi)</h4>
+        <div class="seg" data-opt="paper"><button data-v="A4" class="on">A4</button><button data-v="A3">A3</button><button data-v="Letter">Letter</button></div>
+        <label class="prop"><span>แผ่นละ <b id="cmV">6</b> ซม.</span><input type="range" id="cmIn" min="1" max="20" step=".5" value="6"></label>
+        <div class="row2"><button class="go" id="exPrintPng">ดาวน์โหลด</button><button id="exPrint">🖨️ พิมพ์</button></div>
+      </div>
+      <div class="ex">
+        <h4>🛍️ ชุดขาย (.zip)</h4>
+        <p>12×12 นิ้ว 3600 px · ลายเดี่ยว 2048 · ภาพโชว์ลาย</p>
+        <button class="go" id="exSale">ดาวน์โหลด</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/brush-templates.js"></script>
+<script src="js/01-state.js"></script>
+<script src="js/02-render.js"></script>
+<script src="js/03-editor.js"></script>
+<script src="js/04-ui.js"></script>
+<script src="js/05-export.js"></script>
+<script src="js/06-ready.js"></script>
+<script src="js/07-draw.js"></script>
+<script src="js/08-photo.js"></script>
+<script>if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});   // (offline on the web — sw.js)</script>
+</body>
+</html>

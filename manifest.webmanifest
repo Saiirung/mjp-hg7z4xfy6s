@@ -1,0 +1,16 @@
+{
+  "name": "MilkJelly Pattern",
+  "short_name": "MJ Pattern",
+  "description": "ทำลาย seamless — วางลาย ลายสำเร็จ วาด แปลงรูป · ส่งออก PNG / แปรง Procreate / พิมพ์ / ชุดขาย",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4F1EA",
+  "theme_color": "#F4F1EA",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
